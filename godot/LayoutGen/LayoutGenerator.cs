@@ -156,19 +156,31 @@ class Turtle
         switch (n.Self)
         {
             case NonTerminalSymbols.Forward:
-                current_trans = current_trans.Translated(current_trans.Basis.Z * step);
+                current_trans = current_trans.Translated(current_trans.Basis.Z.Normalized() * step);
                 break;
             case NonTerminalSymbols.YawClockwise:
-                current_trans = current_trans.Rotated(current_trans.Basis.Y, angle);
+                current_trans = current_trans.RotatedLocal(
+                    current_trans.Basis.Y.Normalized(),
+                    -angle
+                );
                 break;
             case NonTerminalSymbols.YawCounterClockwise:
-                current_trans = current_trans.Rotated(current_trans.Basis.Y, -angle);
+                current_trans = current_trans.RotatedLocal(
+                    current_trans.Basis.Y.Normalized(),
+                    +angle
+                );
                 break;
             case NonTerminalSymbols.PitchUp:
-                current_trans = current_trans.Rotated(current_trans.Basis.X, angle);
+                current_trans = current_trans.RotatedLocal(
+                    current_trans.Basis.X.Normalized(),
+                    -angle
+                );
                 break;
             case NonTerminalSymbols.PitchDown:
-                current_trans = current_trans.Rotated(current_trans.Basis.X, -angle);
+                current_trans = current_trans.RotatedLocal(
+                    current_trans.Basis.X.Normalized(),
+                    +angle
+                );
                 break;
             case NonTerminalSymbols.IncreaseAngle:
                 angle += angle_modifier;
