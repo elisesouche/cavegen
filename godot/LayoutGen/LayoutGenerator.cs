@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace LayoutGen;
@@ -37,6 +38,9 @@ public partial class LayoutGenerator : Node
 
     [Export]
     float angle_modifier;
+
+    [Export]
+    float joinProbability;
 
     [ExportToolButton("Generate")]
     public Callable GenerateButton => Callable.From(Run);
@@ -104,6 +108,7 @@ public partial class LayoutGenerator : Node
     void RunTurtle(List<Symbol> program)
     {
         var turtle = new Turtle(anchor, step, step_modifier, angle, angle_modifier);
+        List<StructureMarker> markers = [];
         void RunOn(List<Symbol> program)
         {
             foreach (var sym in program)
@@ -126,18 +131,70 @@ public partial class LayoutGenerator : Node
                             nameof(sym)
                         );
                 }
-                switch (point)
-                {
-                    case Turtle.PointDrop.Normal:
-                        turtle.DropPoint(normal_marker);
-                        break;
-                    case Turtle.PointDrop.Tip:
-                        turtle.DropPoint(tip_marker);
-                        break;
-                }
+                DropPoint(turtle.OldTransform, point, markers);
             }
         }
         RunOn(program);
+
+        var tips = markers.Where(m => m.isTip).ToHashSet();
+        while (tips.Count > 0)
+        {
+            var mark = tips.First();
+            tips.Remove(mark);
+            // select an other tip
+            var other = tips.MinBy(other =>
+                mark.position.Origin.DistanceSquaredTo(other.position.Origin)
+            );
+            tips.Remove(other);
+            var dst = mark.position.Origin.DistanceTo(other.position.Origin);
+            var step = 1.0f;
+            for (var f = 0.0f; f < 1.0f; f += step / dst)
+            {
+                var trans = mark.position.InterpolateWith(other.position, f);
+                DropPoint(trans, Turtle.PointDrop.Normal, markers);
+            }
+        }
+        foreach (var mark in tips)
+        {
+            if (RandomInstance.instance.NextDouble() < joinProbability)
+            {
+                // select an other tip
+                var other = tips.MinBy(other =>
+                    (other.position == mark.position)
+                        ? float.PositiveInfinity
+                        : mark.position.Origin.DistanceSquaredTo(other.position.Origin)
+                );
+                var dst = mark.position.Origin.DistanceTo(other.position.Origin);
+                var step = 1.0f;
+                for (var f = 0.0f; f < 1.0f; f += step / dst)
+                {
+                    var trans = mark.position.InterpolateWith(other.position, f);
+                    DropPoint(trans, Turtle.PointDrop.Normal, markers);
+                }
+            }
+        }
+    }
+
+    private void DropPoint(Transform3D trans, Turtle.PointDrop point, List<StructureMarker> markers)
+    {
+        switch (point)
+        {
+            case Turtle.PointDrop.Normal:
+                DropPointScene(trans, normal_marker);
+                markers.Add(new StructureMarker(trans, false));
+                break;
+            case Turtle.PointDrop.Tip:
+                DropPointScene(trans, tip_marker);
+                markers.Add(new StructureMarker(trans, true));
+                break;
+        }
+    }
+
+    void DropPointScene(Transform3D transform, PackedScene marker)
+    {
+        var node = marker.Instantiate<Node3D>();
+        anchor.AddChild(node);
+        node.Transform = transform;
     }
 
     // Called when the node enters the scene tree for the first time.
@@ -150,6 +207,18 @@ public partial class LayoutGenerator : Node
     public override void _Process(double delta) { }
 }
 
+struct StructureMarker
+{
+    public Transform3D position;
+    public bool isTip;
+
+    public StructureMarker(Transform3D position, bool is_tip)
+    {
+        this.position = position;
+        this.isTip = is_tip;
+    }
+};
+
 class Turtle
 {
     Stack<Transform3D> stack;
@@ -160,7 +229,7 @@ class Turtle
     float angle_modifier;
 
     Transform3D currentTransform;
-    Transform3D OldTransform { get; set; }
+    public Transform3D OldTransform { get; set; }
 
     public Transform3D CurrentTrans
     {
@@ -230,13 +299,6 @@ class Turtle
                 // unreachable but C# is a shitty language
                 return PointDrop.None;
         }
-    }
-
-    public void DropPoint(PackedScene marker)
-    {
-        var node = marker.Instantiate<Node3D>();
-        anchor.AddChild(node);
-        node.Transform = OldTransform;
     }
 
     public PointDrop StepTerminal(Terminal t)

@@ -1,7 +1,7 @@
 #+title: Procedural Cave Generation
 
 * Progress [0/4]
-** [ ] Layout generation [3/4]
+** [ ] Layout generation [4/4]
 
 *** [X] L-System
 
@@ -9,7 +9,12 @@
 
 *** [X] Turtle
 
-*** [ ] Endpoint connections
+*** [X] Endpoint connections
+
+**** TODO better algorithm
+
+It should be nondeterministic, but have short loops. Find a good probability
+distribution.
 
 ** [ ] Mesh generation [0/4]
 
