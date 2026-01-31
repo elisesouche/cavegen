@@ -51,6 +51,17 @@ public partial class LayoutGenerator : Node
     [ExportToolButton("Delete Markers")]
     public Callable DeleteMarkerButton => Callable.From(DeleteMarkers);
 
+    internal LSystem System
+    {
+        get
+        {
+            if (system is null)
+                RebuildLSystem();
+            return system;
+        }
+        set => system = value;
+    }
+
     void RebuildLSystem()
     {
         var macroSystem = LSystemParser.Macros(macro_defs);
@@ -67,19 +78,18 @@ public partial class LayoutGenerator : Node
                 d.Add(n, [p]);
             }
         }
-        system = new LSystem
+        System = new LSystem
         {
             Initial = new NonTerminal(NonTerminalSymbols.BranchTip),
             Productions = d,
             MacroSystem = macroSystem,
         };
-        GD.Print(LSystemFormatter.LSystem(system));
     }
 
     void Run()
     {
         DeleteMarkers();
-        var res = system.Run(numRuns);
+        var res = System.Run(numRuns);
         RunTurtle(res);
     }
 
@@ -108,7 +118,7 @@ public partial class LayoutGenerator : Node
                         point = turtle.StepTerminal(t);
                         break;
                     case MacroPlaceholder p:
-                        RunOn(system.MacroSystem.Expand(p.Name));
+                        RunOn(System.MacroSystem.Expand(p.Name));
                         break;
                     default:
                         throw new ArgumentException(
