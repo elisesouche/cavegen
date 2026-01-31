@@ -27,9 +27,6 @@ public partial class LayoutGenerator : Node
     Node3D anchor;
 
     [Export]
-    PackedScene marker;
-
-    [Export]
     float step;
 
     [Export]
@@ -43,6 +40,13 @@ public partial class LayoutGenerator : Node
 
     [ExportToolButton("Generate")]
     public Callable GenerateButton => Callable.From(Run);
+
+    [ExportGroup("Debug render")]
+    [Export]
+    PackedScene normal_marker;
+
+    [Export]
+    PackedScene tip_marker;
 
     [ExportToolButton("Delete Markers")]
     public Callable DeleteMarkerButton => Callable.From(DeleteMarkers);
@@ -69,15 +73,13 @@ public partial class LayoutGenerator : Node
             Productions = d,
             MacroSystem = macroSystem,
         };
-        GD.Print(LSystemFormatter.LSystem(system));
     }
 
     void Run()
     {
         DeleteMarkers();
         var res = system.Run(numRuns);
-        GD.Print(LSystemFormatter.Form(res));
-        Turtle(res);
+        RunTurtle(res);
     }
 
     void DeleteMarkers()
@@ -88,21 +90,21 @@ public partial class LayoutGenerator : Node
         }
     }
 
-    void Turtle(List<Symbol> program)
+    void RunTurtle(List<Symbol> program)
     {
         var turtle = new Turtle(anchor, step, step_modifier, angle, angle_modifier);
         void RunOn(List<Symbol> program)
         {
             foreach (var sym in program)
             {
-                turtle.DropPoint(marker);
+                var point = Turtle.PointDrop.None;
                 switch (sym)
                 {
                     case NonTerminal n:
-                        turtle.StepNonTerminal(n);
+                        point = turtle.StepNonTerminal(n);
                         break;
                     case Terminal t:
-                        turtle.StepTerminal(t);
+                        point = turtle.StepTerminal(t);
                         break;
                     case MacroPlaceholder p:
                         RunOn(system.MacroSystem.Expand(p.Name));
@@ -112,6 +114,15 @@ public partial class LayoutGenerator : Node
                             $"Unhandled Symbol subtype: {sym?.GetType().Name}",
                             nameof(sym)
                         );
+                }
+                switch (point)
+                {
+                    case Turtle.PointDrop.Normal:
+                        turtle.DropPoint(normal_marker);
+                        break;
+                    case Turtle.PointDrop.Tip:
+                        turtle.DropPoint(tip_marker);
+                        break;
                 }
             }
         }
@@ -139,6 +150,13 @@ class Turtle
 
     Transform3D current_trans;
 
+    public enum PointDrop
+    {
+        None,
+        Normal,
+        Tip,
+    }
+
     public Turtle(Node3D anchor, float step, float step_modifier, float angle, float angle_modifier)
     {
         this.stack = [];
@@ -151,52 +169,56 @@ class Turtle
         this.current_trans = anchor.Transform;
     }
 
-    public void StepNonTerminal(NonTerminal n)
+    public PointDrop StepNonTerminal(NonTerminal n)
     {
         switch (n.Self)
         {
             case NonTerminalSymbols.Forward:
                 current_trans = current_trans.Translated(current_trans.Basis.Z.Normalized() * step);
-                break;
+                return PointDrop.Normal;
             case NonTerminalSymbols.YawClockwise:
                 current_trans = current_trans.RotatedLocal(
                     current_trans.Basis.Y.Normalized(),
                     -angle
                 );
-                break;
+                return PointDrop.None;
             case NonTerminalSymbols.YawCounterClockwise:
                 current_trans = current_trans.RotatedLocal(
                     current_trans.Basis.Y.Normalized(),
                     +angle
                 );
-                break;
+                return PointDrop.None;
             case NonTerminalSymbols.PitchUp:
                 current_trans = current_trans.RotatedLocal(
                     current_trans.Basis.X.Normalized(),
                     -angle
                 );
-                break;
+                return PointDrop.None;
             case NonTerminalSymbols.PitchDown:
                 current_trans = current_trans.RotatedLocal(
                     current_trans.Basis.X.Normalized(),
                     +angle
                 );
-                break;
+                return PointDrop.None;
             case NonTerminalSymbols.IncreaseAngle:
                 angle += angle_modifier;
-                break;
+                return PointDrop.None;
             case NonTerminalSymbols.DecreaseAngle:
                 angle -= angle_modifier;
-                break;
+                return PointDrop.None;
             case NonTerminalSymbols.IncreaseStep:
                 step += step_modifier;
-                break;
+                return PointDrop.None;
             case NonTerminalSymbols.DecreaseStep:
                 step -= step_modifier;
-                break;
+                return PointDrop.None;
+            case NonTerminalSymbols.BranchEnd:
+                return PointDrop.Tip;
+            case NonTerminalSymbols.BranchTip:
+                return PointDrop.None;
             default:
-                // remains the case of the branch tips and ends
-                break;
+                // unreachable but C# is a shitty language
+                return PointDrop.None;
         }
     }
 
@@ -207,16 +229,19 @@ class Turtle
         node.Transform = current_trans;
     }
 
-    public void StepTerminal(Terminal t)
+    public PointDrop StepTerminal(Terminal t)
     {
         switch (t.Self)
         {
             case TerminalSymbols.StartBranch:
                 stack.Push(current_trans);
-                break;
+                return PointDrop.None;
             case TerminalSymbols.EndBranch:
                 current_trans = stack.Pop();
-                break;
+                return PointDrop.None;
+            default:
+                // unreachable but C# is a shitty language
+                return PointDrop.None;
         }
     }
 }

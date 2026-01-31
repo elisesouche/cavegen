@@ -146,6 +146,7 @@ static class LSystemFormatter
                 NonTerminalSymbols.IncreaseStep => "B",
                 NonTerminalSymbols.DecreaseStep => "S",
                 NonTerminalSymbols.BranchTip => "Z",
+                NonTerminalSymbols.BranchEnd => "0",
                 _ => throw new ArgumentOutOfRangeException(
                     nameof(n.Self),
                     n.Self,
@@ -235,6 +236,7 @@ static class LSystemParser
             'B' => new NonTerminal(NonTerminalSymbols.IncreaseStep),
             'S' => new NonTerminal(NonTerminalSymbols.DecreaseStep),
             'Z' => new NonTerminal(NonTerminalSymbols.BranchTip),
+            '0' => new NonTerminal(NonTerminalSymbols.BranchEnd),
 
             '@' => throw new FormatException(
                 "Macro references must be parsed as strings, not individual characters."
