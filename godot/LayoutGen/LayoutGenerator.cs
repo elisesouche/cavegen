@@ -73,6 +73,7 @@ public partial class LayoutGenerator : Node
             Productions = d,
             MacroSystem = macroSystem,
         };
+        GD.Print(LSystemFormatter.LSystem(system));
     }
 
     void Run()
@@ -148,7 +149,18 @@ class Turtle
     float angle;
     float angle_modifier;
 
-    Transform3D current_trans;
+    Transform3D currentTransform;
+    Transform3D OldTransform { get; set; }
+
+    public Transform3D CurrentTrans
+    {
+        get => currentTransform;
+        set
+        {
+            OldTransform = currentTransform;
+            currentTransform = value;
+        }
+    }
 
     public enum PointDrop
     {
@@ -166,7 +178,7 @@ class Turtle
         this.angle = angle;
         this.angle_modifier = angle_modifier;
 
-        this.current_trans = anchor.Transform;
+        this.CurrentTrans = anchor.Transform;
     }
 
     public PointDrop StepNonTerminal(NonTerminal n)
@@ -174,31 +186,19 @@ class Turtle
         switch (n.Self)
         {
             case NonTerminalSymbols.Forward:
-                current_trans = current_trans.Translated(current_trans.Basis.Z.Normalized() * step);
+                CurrentTrans = CurrentTrans.Translated(CurrentTrans.Basis.Z.Normalized() * step);
                 return PointDrop.Normal;
             case NonTerminalSymbols.YawClockwise:
-                current_trans = current_trans.RotatedLocal(
-                    current_trans.Basis.Y.Normalized(),
-                    -angle
-                );
+                CurrentTrans = CurrentTrans.RotatedLocal(CurrentTrans.Basis.Y.Normalized(), -angle);
                 return PointDrop.None;
             case NonTerminalSymbols.YawCounterClockwise:
-                current_trans = current_trans.RotatedLocal(
-                    current_trans.Basis.Y.Normalized(),
-                    +angle
-                );
+                CurrentTrans = CurrentTrans.RotatedLocal(CurrentTrans.Basis.Y.Normalized(), +angle);
                 return PointDrop.None;
             case NonTerminalSymbols.PitchUp:
-                current_trans = current_trans.RotatedLocal(
-                    current_trans.Basis.X.Normalized(),
-                    -angle
-                );
+                CurrentTrans = CurrentTrans.RotatedLocal(CurrentTrans.Basis.X.Normalized(), -angle);
                 return PointDrop.None;
             case NonTerminalSymbols.PitchDown:
-                current_trans = current_trans.RotatedLocal(
-                    current_trans.Basis.X.Normalized(),
-                    +angle
-                );
+                CurrentTrans = CurrentTrans.RotatedLocal(CurrentTrans.Basis.X.Normalized(), +angle);
                 return PointDrop.None;
             case NonTerminalSymbols.IncreaseAngle:
                 angle += angle_modifier;
@@ -213,7 +213,7 @@ class Turtle
                 step -= step_modifier;
                 return PointDrop.None;
             case NonTerminalSymbols.BranchEnd:
-                return PointDrop.Tip;
+                return PointDrop.None;
             case NonTerminalSymbols.BranchTip:
                 return PointDrop.None;
             default:
@@ -226,7 +226,7 @@ class Turtle
     {
         var node = marker.Instantiate<Node3D>();
         anchor.AddChild(node);
-        node.Transform = current_trans;
+        node.Transform = OldTransform;
     }
 
     public PointDrop StepTerminal(Terminal t)
@@ -234,11 +234,11 @@ class Turtle
         switch (t.Self)
         {
             case TerminalSymbols.StartBranch:
-                stack.Push(current_trans);
+                stack.Push(CurrentTrans);
                 return PointDrop.None;
             case TerminalSymbols.EndBranch:
-                current_trans = stack.Pop();
-                return PointDrop.None;
+                CurrentTrans = stack.Pop();
+                return PointDrop.Tip;
             default:
                 // unreachable but C# is a shitty language
                 return PointDrop.None;
