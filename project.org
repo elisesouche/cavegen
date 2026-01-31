@@ -1,0 +1,36 @@
+#+title: Procedural Cave Generation
+
+* Progress [0/4]
+** [ ] Layout generation [3/4]
+
+*** [X] L-System
+
+*** [X] Macros
+
+*** [X] Turtle
+
+*** [ ] Endpoint connections
+
+** [ ] Mesh generation [0/4]
+
+*** [ ] Metaball definition, with noise
+
+*** [ ] Following the turtle
+
+*** [ ] Carving into the vertex field
+
+*** [ ] Mesh generation with Marching Cubes
+
+** [ ] Shading [0/2]
+
+*** [ ] Triplanar projection
+
+*** [ ] Finding adequate textures
+
+** [ ] Props [0/2]
+
+*** [ ] Pebbles
+
+*** [ ] Stalactites/Stalagmites
+
+* Report
