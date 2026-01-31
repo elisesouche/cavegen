@@ -59,14 +59,14 @@ class MacroPlaceholder : Symbol
 
 class MacroSystem
 {
-    public Dictionary<string, List<Symbol>> Macros { get; private set; } = new();
+    public Dictionary<string, List<List<Symbol>>> Macros { get; private set; } = new();
 
     public void Define(string name, List<Symbol> symbols)
     {
         if (Macros.ContainsKey(name))
-            throw new ArgumentException($"Macro '{name}' is already defined.");
-
-        Macros[name] = symbols;
+            Macros[name].Add(symbols);
+        else
+            Macros[name] = [symbols];
     }
 
     public List<Symbol> Expand(string name)
@@ -74,7 +74,7 @@ class MacroSystem
         if (!Macros.TryGetValue(name, out var symbols))
             throw new KeyNotFoundException($"Macro '{name}' is not defined.");
 
-        return symbols.ToList(); // Return a copy to prevent modification
+        return RandomInstance.instance.InList(symbols).ToList(); // Return a copy to prevent modification
     }
 }
 
@@ -88,8 +88,6 @@ class LSystem
 
     HashSet<List<Symbol>> empty = new();
 
-    Random r = new();
-
     List<Symbol> RunIter(List<Symbol> generation)
     {
         var next = new List<Symbol>();
@@ -97,7 +95,7 @@ class LSystem
         {
             List<Symbol> productions = sym switch
             {
-                NonTerminal n => r.InList(
+                NonTerminal n => RandomInstance.instance.InList(
                     this.Productions.TryGetValue(n, out var p)
                         ? p
                         :
@@ -192,7 +190,8 @@ static class LSystemFormatter
             sb.AppendLine("Macros:");
             foreach (var macro in lsystem.MacroSystem.Macros)
             {
-                sb.AppendLine($"  @{macro.Key} = {Form(macro.Value)}");
+                foreach (var def in macro.Value)
+                    sb.AppendLine($"  @{macro.Key} = {Form(def)}");
             }
         }
 
@@ -265,8 +264,8 @@ static class LSystemParser
     private static string ParseMacroName(string s, ref int index)
     {
         int start = index + 1;
-        while (index + 1 < s.Length && char.IsLetterOrDigit(s[index + 1]))
-            index++;
+        // while (index + 1 < s.Length && char.IsLetterOrDigit(s[index + 1]))
+        index++;
         return s[start..(index + 1)];
     }
 
