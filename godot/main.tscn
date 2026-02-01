@@ -1,22 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://6qsp67v1axn6"]
+[gd_scene load_steps=5 format=3 uid="uid://6qsp67v1axn6"]
 
 [ext_resource type="Script" uid="uid://2pu7ad5x1q5f" path="res://CaveManager.cs" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://1ttyvwlt87cw" path="res://LayoutGen/LayoutGenerator.cs" id="2_0xm2m"]
-[ext_resource type="PackedScene" uid="uid://uvn7ski4br0c" path="res://LayoutGen/marker.tscn" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://uvn7ski4br0c" path="res://LayoutGen/markers/normal.tscn" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://ioltrt4rwhtq" path="res://LayoutGen/markers/tip.tscn" id="4_1bvp3"]
 
 [node name="Cave" type="Node"]
 script = ExtResource("1_ig7tw")
 
 [node name="Layout" type="Node" parent="." node_paths=PackedStringArray("anchor")]
 script = ExtResource("2_0xm2m")
-macro_defs = ["@C = FRFRFRFR", "@H = UFUFUFFFFDFDFDF", "@I = F", "@Q = FZRFZLFZRFZL", "@T = UFUFUFFFZFDFDFDF"]
-rules = ["Z -> @I[@Q[@C[@T[@T@Q]]]]", "Z -> @I[@Q[@C[@H[@T@Q]]]]"]
-numRuns = 3
+macro_defs = ["@C = FRFRFRFR", "@C = FLFLFLFL", "@H = UFUFUFFFFDFDFDF", "@H=DFDFDFFFFUFUFUF", "@I = FFFFF", "@Q = F[RRFZ][LLFZ]FZ", "@T = UFUFUFFFZFDFDFDF", "@T = DFDFDFFFZFUFUFUF"]
+rules = ["Z->@I@Q[@HZ][@T@C]", "Z->@H@I[Z]@C@C"]
+numRuns = 5
 anchor = NodePath("Node3D")
-marker = ExtResource("3_h2yge")
 step = 1.0
 step_modifier = 0.03
 angle = 0.3
 angle_modifier = 0.05
+joinProbability = 1.0
+normal_marker = ExtResource("3_h2yge")
+tip_marker = ExtResource("4_1bvp3")
 
 [node name="Node3D" type="Node3D" parent="Layout"]
