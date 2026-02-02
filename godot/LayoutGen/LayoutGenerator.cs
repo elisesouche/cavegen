@@ -8,14 +8,14 @@ namespace LayoutGen;
 [Tool]
 public partial class LayoutGenerator : Node
 {
-    private LSystem system;
+    private LSystem? system;
 
     [ExportGroup("L-System")]
     [Export]
-    Godot.Collections.Array<string> macro_defs;
+    public required Godot.Collections.Array<string> macro_defs;
 
     [Export]
-    Godot.Collections.Array<string> rules;
+    public required Godot.Collections.Array<string> rules;
 
     [ExportToolButton("Rebuild L-System")]
     public Callable RebuildButton => Callable.From(RebuildLSystem);
@@ -25,7 +25,7 @@ public partial class LayoutGenerator : Node
 
     [ExportGroup("Turtle")]
     [Export]
-    Node3D anchor;
+    Node3D? anchor;
 
     [Export]
     float step;
@@ -47,10 +47,10 @@ public partial class LayoutGenerator : Node
 
     [ExportGroup("Debug render")]
     [Export]
-    PackedScene normal_marker;
+    PackedScene? normal_marker;
 
     [Export]
-    PackedScene tip_marker;
+    PackedScene? tip_marker;
 
     [ExportToolButton("Delete Markers")]
     public Callable DeleteMarkerButton => Callable.From(DeleteMarkers);
@@ -60,12 +60,15 @@ public partial class LayoutGenerator : Node
         get
         {
             if (system is null)
+            {
                 RebuildLSystem();
+            }
             return system;
         }
         set => system = value;
     }
 
+    [System.Diagnostics.CodeAnalysis.MemberNotNull(nameof(system))]
     void RebuildLSystem()
     {
         var macroSystem = LSystemParser.Macros(macro_defs);
@@ -82,7 +85,7 @@ public partial class LayoutGenerator : Node
                 d.Add(n, [p]);
             }
         }
-        System = new LSystem
+        system = new LSystem
         {
             Initial = new NonTerminal(NonTerminalSymbols.BranchTip),
             Productions = d,
@@ -99,7 +102,7 @@ public partial class LayoutGenerator : Node
 
     void DeleteMarkers()
     {
-        foreach (var child in anchor.GetChildren())
+        foreach (var child in anchor?.GetChildren() ?? [])
         {
             child.QueueFree();
         }
@@ -107,7 +110,7 @@ public partial class LayoutGenerator : Node
 
     void RunTurtle(List<Symbol> program)
     {
-        var turtle = new Turtle(anchor, step, step_modifier, angle, angle_modifier);
+        var turtle = new Turtle(anchor!, step, step_modifier, angle, angle_modifier);
         List<StructureMarker> markers = [];
         void RunOn(List<Symbol> program)
         {
@@ -180,11 +183,11 @@ public partial class LayoutGenerator : Node
         switch (point)
         {
             case Turtle.PointDrop.Normal:
-                DropPointScene(trans, normal_marker);
+                DropPointScene(trans, normal_marker!);
                 markers.Add(new StructureMarker(trans, false));
                 break;
             case Turtle.PointDrop.Tip:
-                DropPointScene(trans, tip_marker);
+                DropPointScene(trans, tip_marker!);
                 markers.Add(new StructureMarker(trans, true));
                 break;
         }
@@ -193,7 +196,7 @@ public partial class LayoutGenerator : Node
     void DropPointScene(Transform3D transform, PackedScene marker)
     {
         var node = marker.Instantiate<Node3D>();
-        anchor.AddChild(node);
+        anchor!.AddChild(node);
         node.Transform = transform;
     }
 

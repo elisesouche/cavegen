@@ -82,9 +82,9 @@ class LSystem
 {
     public NonTerminal Initial { get; set; }
 
-    public Dictionary<NonTerminal, List<List<Symbol>>> Productions { get; set; }
+    public required Dictionary<NonTerminal, List<List<Symbol>>> Productions { get; set; }
 
-    public MacroSystem MacroSystem { get; set; }
+    public required MacroSystem MacroSystem { get; set; }
 
     HashSet<List<Symbol>> empty = new();
 
