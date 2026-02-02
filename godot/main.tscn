@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://6qsp67v1axn6"]
+[gd_scene load_steps=7 format=3 uid="uid://6qsp67v1axn6"]
 
 [ext_resource type="Script" uid="uid://2pu7ad5x1q5f" path="res://CaveManager.cs" id="1_ig7tw"]
-[ext_resource type="Script" uid="uid://1ttyvwlt87cw" path="res://LayoutGen/LayoutGenerator.cs" id="2_0xm2m"]
-[ext_resource type="PackedScene" uid="uid://uvn7ski4br0c" path="res://LayoutGen/markers/normal.tscn" id="3_h2yge"]
-[ext_resource type="PackedScene" uid="uid://ioltrt4rwhtq" path="res://LayoutGen/markers/tip.tscn" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://1ttyvwlt87cw" path="res://Layout/LayoutGenerator.cs" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://uvn7ski4br0c" path="res://Layout/markers/normal.tscn" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://ioltrt4rwhtq" path="res://Layout/markers/tip.tscn" id="4_1bvp3"]
 [ext_resource type="Script" uid="uid://ce6a67ohdgq8" path="res://Voxel/VoxelArea.cs" id="5_lquwl"]
+[ext_resource type="Script" uid="uid://jqhrlw77ffci" path="res://Voxel/SphereBrush.cs" id="6_7mycd"]
 
 [node name="Cave" type="Node"]
 script = ExtResource("1_ig7tw")
@@ -31,3 +32,7 @@ SizeX = 10.0
 SizeY = 10.0
 SizeZ = 10.0
 VoxelWidth = 1.5
+
+[node name="SphereBrush" type="Node3D" parent="voxel"]
+script = ExtResource("6_7mycd")
+radius = 0.865
