@@ -1,21 +1,10 @@
 using Godot;
 
+namespace CaveGen.Voxel;
+
 readonly record struct VoxelCoord(int X, int Y, int Z);
 
-record VoxelState
-{
-    public float value;
-
-    public VoxelState(float value)
-    {
-        this.value = value;
-    }
-
-    public VoxelState()
-    {
-        this.value = 0;
-    }
-}
+record VoxelState(float value = 0);
 
 [Tool]
 public partial class VoxelArea : Node3D
