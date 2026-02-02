@@ -3,6 +3,7 @@ using Godot;
 
 namespace CaveGen.Voxel;
 
+[GlobalClass, Tool]
 public partial class SphereBrush : Brush
 {
     [Export]
