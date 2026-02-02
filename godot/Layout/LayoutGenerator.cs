@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-namespace LayoutGen;
+namespace CaveGen.Layout;
 
 [Tool]
 public partial class LayoutGenerator : Node
