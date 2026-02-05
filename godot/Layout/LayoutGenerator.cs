@@ -210,17 +210,7 @@ public partial class LayoutGenerator : Node
     public override void _Process(double delta) { }
 }
 
-struct StructureMarker
-{
-    public Transform3D position;
-    public bool isTip;
-
-    public StructureMarker(Transform3D position, bool is_tip)
-    {
-        this.position = position;
-        this.isTip = is_tip;
-    }
-};
+public record struct StructureMarker(Transform3D position, bool isTip);
 
 class Turtle
 {

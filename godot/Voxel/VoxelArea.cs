@@ -3,16 +3,15 @@ using Godot;
 
 namespace CaveGen.Voxel;
 
-readonly record struct VoxelCoord(int X, int Y, int Z);
+public readonly record struct VoxelCoord(int X, int Y, int Z);
 
-record struct VoxelState(float value = 0);
+public record struct VoxelState(float value = 0);
 
-[Tool]
-[GlobalClass]
+[Tool, GlobalClass]
 public partial class VoxelArea : Node3D
 {
     VoxelState[,,] voxels = new VoxelState[,,] { };
-    VoxelState[,,] Voxels
+    public VoxelState[,,] Voxels
     {
         get
         {
@@ -23,7 +22,7 @@ public partial class VoxelArea : Node3D
     }
 
     [Export]
-    int SizeX,
+    public int SizeX,
         SizeY,
         SizeZ;
 
@@ -35,7 +34,7 @@ public partial class VoxelArea : Node3D
     float WorldSizeZ => SizeZ * VoxelWidth;
     Vector3 CenterOffset => new Vector3(WorldSizeX / 2, WorldSizeY / 2, WorldSizeZ / 2);
 
-    Vector3 Voxel2World(VoxelCoord coord)
+    public Vector3 Voxel2World(VoxelCoord coord)
     {
         var offsetx = (coord.X + .5f) * this.VoxelWidth;
         var offsety = (coord.Y + .5f) * this.VoxelWidth;
@@ -44,7 +43,7 @@ public partial class VoxelArea : Node3D
         return this.Position + offset;
     }
 
-    VoxelCoord World2Voxel(Vector3 coord)
+    public VoxelCoord World2Voxel(Vector3 coord)
     {
         var offset = coord - this.Position + CenterOffset;
         var x = (int)(offset.X / VoxelWidth - .5f);
@@ -53,7 +52,7 @@ public partial class VoxelArea : Node3D
         return new VoxelCoord(x, y, z);
     }
 
-    void ApplyBrush(Brush brush)
+    public void ApplyBrush(Brush brush)
     {
         // Find the bounding box
         var center = ToLocal(brush.GlobalPosition);
@@ -89,12 +88,12 @@ public partial class VoxelArea : Node3D
         && voxel.Z >= 0
         && voxel.Z < SizeZ;
 
-    float GetVoxelValue(VoxelCoord voxel) => this.Voxels[voxel.X, voxel.Y, voxel.Z].value;
+    public float GetVoxelValue(VoxelCoord voxel) => this.Voxels[voxel.X, voxel.Y, voxel.Z].value;
 
-    void SetVoxelValue(VoxelCoord voxel, float value) =>
+    public void SetVoxelValue(VoxelCoord voxel, float value) =>
         this.Voxels[voxel.X, voxel.Y, voxel.Z].value = value;
 
-    void ModifyVoxelValue(VoxelCoord voxel, Func<float, float> func) =>
+    public void ModifyVoxelValue(VoxelCoord voxel, Func<float, float> func) =>
         SetVoxelValue(voxel, func(GetVoxelValue(voxel)));
 
     [Export]
@@ -104,7 +103,7 @@ public partial class VoxelArea : Node3D
     Callable __reset => Callable.From(Reset);
 
     [System.Diagnostics.CodeAnalysis.MemberNotNull(nameof(voxels))]
-    void Reset()
+    public void Reset()
     {
         voxels = new VoxelState[SizeX, SizeY, SizeZ];
     }
@@ -118,7 +117,7 @@ public partial class VoxelArea : Node3D
     [ExportToolButton("Apply brush")]
     Callable __apply => Callable.From(() => ApplyBrush(Brush!));
 
-    void IterVoxels(Action<VoxelCoord> action)
+    public void IterVoxels(Action<VoxelCoord> action)
     {
         for (int x = 0; x < SizeX; x++)
         {

@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 namespace CaveGen.Voxel;
@@ -12,5 +11,5 @@ public partial class SphereBrush : Brush
     public override Vector3 Bounds => new(radius, radius, radius);
 
     public override float GetValueAtLocal(Vector3 offset) =>
-        (offset.LengthSquared() <= radius * radius) ? 0.0f : 1.0f;
+        (offset.LengthSquared() <= radius * radius) ? 1.0f : 0.0f;
 }
