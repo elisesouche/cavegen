@@ -93,11 +93,11 @@ public partial class LayoutGenerator : Node
         };
     }
 
-    void Run()
+    public List<StructureMarker> Run()
     {
-        DeleteMarkers();
+        // DeleteMarkers();
         var res = System.Run(numRuns);
-        RunTurtle(res);
+        return RunTurtle(res);
     }
 
     void DeleteMarkers()
@@ -108,7 +108,7 @@ public partial class LayoutGenerator : Node
         }
     }
 
-    void RunTurtle(List<Symbol> program)
+    List<StructureMarker> RunTurtle(List<Symbol> program)
     {
         var turtle = new Turtle(anchor!, step, step_modifier, angle, angle_modifier);
         List<StructureMarker> markers = [];
@@ -157,25 +157,8 @@ public partial class LayoutGenerator : Node
                 DropPoint(trans, Turtle.PointDrop.Normal, markers);
             }
         }
-        foreach (var mark in tips)
-        {
-            if (RandomInstance.instance.NextDouble() < joinProbability)
-            {
-                // select an other tip
-                var other = tips.MinBy(other =>
-                    (other.position == mark.position)
-                        ? float.PositiveInfinity
-                        : mark.position.Origin.DistanceSquaredTo(other.position.Origin)
-                );
-                var dst = mark.position.Origin.DistanceTo(other.position.Origin);
-                var step = 1.0f;
-                for (var f = 0.0f; f < 1.0f; f += step / dst)
-                {
-                    var trans = mark.position.InterpolateWith(other.position, f);
-                    DropPoint(trans, Turtle.PointDrop.Normal, markers);
-                }
-            }
-        }
+
+        return markers;
     }
 
     private void DropPoint(Transform3D trans, Turtle.PointDrop point, List<StructureMarker> markers)
@@ -183,11 +166,11 @@ public partial class LayoutGenerator : Node
         switch (point)
         {
             case Turtle.PointDrop.Normal:
-                DropPointScene(trans, normal_marker!);
+                // DropPointScene(trans, normal_marker!);
                 markers.Add(new StructureMarker(trans, false));
                 break;
             case Turtle.PointDrop.Tip:
-                DropPointScene(trans, tip_marker!);
+                // DropPointScene(trans, tip_marker!);
                 markers.Add(new StructureMarker(trans, true));
                 break;
         }
