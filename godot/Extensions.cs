@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Godot;
 
 static class Extensions
 {
@@ -9,6 +10,8 @@ static class Extensions
         var i = r.Next(n);
         return l[i];
     }
+
+    public static Vector3 XYZ(this Vector4 vec) => new(vec.X, vec.Y, vec.Z);
 }
 
 public static class RandomInstance
