@@ -10,8 +10,10 @@ config_version=5
 
 [application]
 
-config/name="cavegen"
+config/name="Cave Generation"
+run/main_scene="uid://6qsp67v1axn6"
 config/features=PackedStringArray("4.5", "C#", "Forward Plus")
+boot_splash/bg_color=Color(0, 0, 0, 1)
 config/icon="res://icon.svg"
 
 [dotnet]

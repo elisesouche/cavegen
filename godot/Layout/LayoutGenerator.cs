@@ -43,7 +43,11 @@ public partial class LayoutGenerator : Node
     float joinProbability;
 
     [ExportToolButton("Generate")]
-    public Callable GenerateButton => Callable.From(Run);
+    public Callable GenerateButton =>
+        Callable.From(() =>
+        {
+            Run();
+        });
 
     [ExportGroup("Debug render")]
     [Export]
@@ -144,6 +148,8 @@ public partial class LayoutGenerator : Node
         {
             var mark = tips.First();
             tips.Remove(mark);
+            if (tips.Count == 0)
+                break;
             // select an other tip
             var other = tips.MinBy(other =>
                 mark.position.Origin.DistanceSquaredTo(other.position.Origin)

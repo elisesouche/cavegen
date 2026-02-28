@@ -653,12 +653,17 @@ public partial class MarchingCubes : Node
         st.Begin(Godot.Mesh.PrimitiveType.Triangles);
         foreach (var tri in tris)
         {
+            var norm_ = tri.norm.XYZ();
+            var norm = new Vector3(norm_.X, norm_.Z, norm_.Y);
+            st.SetNormal(norm);
             st.AddVertex(tri.a.XYZ());
+            st.SetNormal(norm);
             st.AddVertex(tri.b.XYZ());
+            st.SetNormal(norm);
             st.AddVertex(tri.c.XYZ());
         }
         st.Index();
-        st.GenerateNormals();
+        // st.GenerateNormals();
         return st.Commit();
     }
 
