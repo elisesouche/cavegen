@@ -27,7 +27,7 @@ public partial class VoxelArea : Node3D
         SizeZ;
 
     [Export]
-    float VoxelWidth;
+    public float VoxelWidth;
 
     float WorldSizeX => SizeX * VoxelWidth;
     float WorldSizeY => SizeY * VoxelWidth;

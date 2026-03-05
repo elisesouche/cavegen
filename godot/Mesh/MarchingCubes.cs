@@ -539,7 +539,7 @@ public partial class MarchingCubes : Node
 
     record struct Triangle(Vector4 a, Vector4 b, Vector4 c, Vector4 norm);
 
-    List<int> LoatLUT()
+    List<int> LoadLUT()
     {
         var file = FileAccess.Open(this.LUTPath, FileAccess.ModeFlags.Read);
         var text = file.GetAsText();
@@ -568,7 +568,7 @@ public partial class MarchingCubes : Node
         return new(pos.X, pos.Y, pos.Z, value);
     }
 
-    void ProcessVoxel(List<Triangle> tris, VoxelCoord coord)
+    void ProcessVoxel(List<Triangle> tris, List<int> lut, VoxelCoord coord)
     {
         System.Diagnostics.Debug.Assert(Area is not null);
         if (coord.X + 1 == Area.SizeX || coord.Y + 1 == Area.SizeY || coord.Z + 1 == Area.SizeZ)
@@ -607,8 +607,6 @@ public partial class MarchingCubes : Node
         int numIndices = lengths[cubeIndex];
         int offset = offsets[cubeIndex];
 
-        var lut = LoatLUT();
-
         for (int i = 0; i < numIndices; i += 3)
         {
             // Get indices of corner points A and B for each of the three edges
@@ -645,7 +643,8 @@ public partial class MarchingCubes : Node
     {
         List<Triangle> tris = [];
         System.Diagnostics.Debug.Assert(Area is not null);
-        Area.IterVoxels(vox => ProcessVoxel(tris, vox));
+        var lut = LoadLUT();
+        Area.IterVoxels(vox => ProcessVoxel(tris, lut, vox));
 
         // ArrayMesh mesh = new();
         // mesh.AddSurfaceFromArrays(ArrayMesh.PrimitiveType.Triangles, tris);

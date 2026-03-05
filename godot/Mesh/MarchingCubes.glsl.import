@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://4lg6f3q1qsps"
+path="res://.godot/imported/MarchingCubes.glsl-5ba429cbbc2d1b8518098bf730dce4b6.res"
+
+[deps]
+
+source_file="res://Mesh/MarchingCubes.glsl"
+dest_files=["res://.godot/imported/MarchingCubes.glsl-5ba429cbbc2d1b8518098bf730dce4b6.res"]
+
+[params]
+

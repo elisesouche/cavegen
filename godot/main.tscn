@@ -1,15 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://6qsp67v1axn6"]
+[gd_scene load_steps=8 format=3 uid="uid://6qsp67v1axn6"]
 
+[ext_resource type="Script" uid="uid://d4cxcmkcj2wc7" path="res://Mesh/MarchingCubes_GPU.cs" id="1_272bh"]
 [ext_resource type="Script" uid="uid://2pu7ad5x1q5f" path="res://CaveManager.cs" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://1ttyvwlt87cw" path="res://Layout/LayoutGenerator.cs" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://uvn7ski4br0c" path="res://Layout/markers/normal.tscn" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://ioltrt4rwhtq" path="res://Layout/markers/tip.tscn" id="4_1bvp3"]
 [ext_resource type="Script" uid="uid://ce6a67ohdgq8" path="res://Voxel/VoxelArea.cs" id="5_lquwl"]
 [ext_resource type="Script" uid="uid://jqhrlw77ffci" path="res://Voxel/SphereBrush.cs" id="6_7mycd"]
-[ext_resource type="Script" uid="uid://512xcc3185ly" path="res://Mesh/MarchingCubes.cs" id="7_272bh"]
-
-[sub_resource type="Environment" id="Environment_272bh"]
-ambient_light_energy = 0.0
 
 [node name="Scene" type="Node3D"]
 
@@ -17,7 +14,7 @@ ambient_light_energy = 0.0
 script = ExtResource("1_ig7tw")
 layout = NodePath("Layout")
 area = NodePath("Voxels")
-cubes = NodePath("MarchingCubes")
+cubes = NodePath("MarchingCubes_GPU")
 brush = NodePath("SphereBrush")
 
 [node name="Layout" type="Node" parent="Cave" node_paths=PackedStringArray("anchor")]
@@ -38,27 +35,24 @@ tip_marker = ExtResource("4_1bvp3")
 
 [node name="Voxels" type="Node3D" parent="Cave" node_paths=PackedStringArray("Brush")]
 script = ExtResource("5_lquwl")
-SizeX = 25
-SizeY = 25
-SizeZ = 25
+SizeX = 50
+SizeY = 50
+SizeZ = 50
 VoxelWidth = 1.0
 VoxelMarker = ExtResource("3_h2yge")
 Brush = NodePath("../SphereBrush")
 
 [node name="SphereBrush" type="Node3D" parent="Cave"]
-transform = Transform3D(0.5547104, -0.7776916, -0.295792, 0.824797, 0.46713966, 0.31857717, -0.1095786, -0.42068607, 0.9005646, -0.7896975, 40.61073, 47.668884)
+transform = Transform3D(0.72020686, -0.63541687, -0.2784747, -0.17075156, 0.2266978, -0.95888096, 0.6724186, 0.73814225, 0.054770846, -0.37720737, -34.531773, 24.638609)
 script = ExtResource("6_7mycd")
 radius = 1.87
 metadata/_custom_type_script = "uid://jqhrlw77ffci"
 
-[node name="MarchingCubes" type="Node" parent="Cave" node_paths=PackedStringArray("Area")]
-script = ExtResource("7_272bh")
+[node name="MarchingCubes_GPU" type="Node" parent="Cave" node_paths=PackedStringArray("Area")]
+script = ExtResource("1_272bh")
 Area = NodePath("../Voxels")
 LUTPath = "res://Mesh/LUT.txt"
-metadata/_custom_type_script = "uid://512xcc3185ly"
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_272bh")
+metadata/_custom_type_script = "uid://d4cxcmkcj2wc7"
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.26424074, 0.08721423, 1.2483935)

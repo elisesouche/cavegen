@@ -12,7 +12,7 @@ public partial class CaveManager : Node
     Voxel.VoxelArea? area;
 
     [Export]
-    Mesh.MarchingCubes? cubes;
+    Mesh.MarchingCubes_GPU? cubes;
 
     [Export]
     Voxel.Brush? brush;
@@ -43,6 +43,8 @@ public partial class CaveManager : Node
             area.ApplyBrush(brush);
         }
 
+        cubes.Init();
+        GD.Print("Calling putmesh");
         cubes.PutMesh();
     }
 
