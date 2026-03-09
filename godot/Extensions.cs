@@ -24,6 +24,15 @@ public static class RandomInstance
     public static Random instance = new();
 }
 
+public static class Print
+{
+    public static void TimestampedMillis(string s)
+    {
+        var time = Time.GetTicksMsec();
+        GD.Print($"[{time}]\t{s}");
+    }
+}
+
 public static class MarshalUtils
 {
     public static void AppendBytesFor<T>(this List<byte> list, in T value)

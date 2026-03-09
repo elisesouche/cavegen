@@ -77,7 +77,7 @@ public partial class MarchingCubes_GPU : Node
         return uniform;
     }
 
-    void BindUniforms()
+    void InitUniforms()
     {
         var lut = LoadLUT();
         LUTBuffer = rd.StorageBufferCreate((uint)lut.Length, lut);
@@ -126,7 +126,12 @@ public partial class MarchingCubes_GPU : Node
     public void Init()
     {
         InitShader();
-        BindUniforms();
+        InitUniforms();
+        InitComputeList();
+    }
+
+    private void InitComputeList()
+    {
         var computeList = rd.ComputeListBegin();
         rd.ComputeListBindComputePipeline(computeList, pipeline);
         rd.ComputeListBindUniformSet(computeList, uniformSet, 0);
@@ -144,15 +149,14 @@ public partial class MarchingCubes_GPU : Node
 
     void StartMeshGeneration()
     {
-        GD.Print("Calling compute shader");
         rd.Submit();
     }
 
     ArrayMesh ProcessMesh()
     {
-        StartMeshGeneration();
         rd.Sync();
 
+        Print.TimestampedMillis("Mesh gen: generation done");
         var counterBytes = rd.BufferGetData(CounterBuffer);
         uint triCount = BitConverter.ToUInt32(counterBytes);
 
@@ -160,7 +164,7 @@ public partial class MarchingCubes_GPU : Node
         var allTriangles = MemoryMarshal.Cast<byte, Triangle>(bytes);
         var triangles = allTriangles.Slice(0, (int)triCount);
 
-        GD.Print($"Mesh built by compute shader. {triangles.Length} triangles.");
+        Print.TimestampedMillis($"Mesh gen: buffer obtained");
         SurfaceTool st = new();
         st.Begin(Godot.Mesh.PrimitiveType.Triangles);
         foreach (var tri in triangles)
@@ -178,15 +182,22 @@ public partial class MarchingCubes_GPU : Node
         return st.Commit();
     }
 
-    public void PutMesh()
+    public async void PutMesh()
     {
         var node = new MeshInstance3D();
+        Print.TimestampedMillis("Mesh gen: initializing uniforms");
+        InitUniforms();
+        Print.TimestampedMillis("Mesh gen: initializing compute");
+        InitComputeList();
+        Print.TimestampedMillis("Mesh gen: started generating");
+        StartMeshGeneration();
+        Print.TimestampedMillis("Mesh gen: processing waiting");
+        await System.Threading.Tasks.Task.Delay(10000);
         node.Mesh = this.ProcessMesh();
-        GD.Print(node.Mesh.SurfaceGetArrays(0));
+        Print.TimestampedMillis("Mesh gen: surface built");
         foreach (var c in this.GetChildren())
             c.QueueFree();
         this.AddChild(node);
-        GD.Print("Marching cubes all done.");
     }
 
     [ExportToolButton("Init")]
