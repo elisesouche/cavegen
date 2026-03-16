@@ -171,13 +171,14 @@ public partial class MarchingCubes_GPU : Node
         {
             var norm_ = tri.norm.XYZ();
             var norm = new Vector3(norm_.X, norm_.Z, norm_.Y);
-            st.SetNormal(norm);
+            // st.SetNormal(norm);
             st.AddVertex(tri.a.XYZ());
-            st.SetNormal(norm);
+            // st.SetNormal(norm);
             st.AddVertex(tri.b.XYZ());
-            st.SetNormal(norm);
+            // st.SetNormal(norm);
             st.AddVertex(tri.c.XYZ());
         }
+        st.GenerateNormals();
         st.Index();
         return st.Commit();
     }
