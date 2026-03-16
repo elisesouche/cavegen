@@ -196,9 +196,22 @@ public partial class MarchingCubes_GPU : Node
         await System.Threading.Tasks.Task.Delay(10000);
         node.Mesh = this.ProcessMesh();
         Print.TimestampedMillis("Mesh gen: surface built");
+        this.FreeResources();
         foreach (var c in this.GetChildren())
             c.QueueFree();
         this.AddChild(node);
+    }
+
+    private void FreeResources()
+    {
+        rd.FreeRid(shader);
+        rd.FreeRid(uniformSet);
+        rd.FreeRid(LUTBuffer);
+        rd.FreeRid(AreaDataBuffer);
+        rd.FreeRid(VoxelValueBuffer);
+        rd.FreeRid(CounterBuffer);
+        rd.FreeRid(pipeline);
+        rd.Free();
     }
 
     [ExportToolButton("Init")]
