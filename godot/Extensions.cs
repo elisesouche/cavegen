@@ -52,9 +52,9 @@ public static class MarshalUtils
 
     public static byte[] VoxelStatesToBytes(VoxelState[,,] voxels)
     {
-        if (voxels.Length == 0)
+        if (voxels is null || voxels.Length == 0)
         {
-            throw new Exception("ABORT");
+            throw new Exception("ABORT: voxel array is null or empty");
         }
         int byteCount = voxels.Length * Unsafe.SizeOf<VoxelState>();
         byte[] result = new byte[byteCount];

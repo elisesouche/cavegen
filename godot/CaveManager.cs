@@ -44,8 +44,8 @@ public partial class CaveManager : Node
         }
 
         cubes.Init();
-        GD.Print("Calling putmesh");
         cubes.PutMesh();
+        Print.TimestampedMillis("Cavegen done.");
     }
 
     // Called when the node enters the scene tree for the first time.

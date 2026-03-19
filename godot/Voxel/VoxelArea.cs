@@ -10,7 +10,7 @@ public record struct VoxelState(float value = 0);
 [Tool, GlobalClass]
 public partial class VoxelArea : Node3D
 {
-    VoxelState[,,] voxels = new VoxelState[,,] { };
+    VoxelState[,,] voxels = null;
     public VoxelState[,,] Voxels
     {
         get

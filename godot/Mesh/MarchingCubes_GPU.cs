@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using CaveGen.Voxel;
 using Godot;
+using GodotTask;
 
 namespace CaveGen.Mesh;
 
@@ -32,9 +33,9 @@ public partial class MarchingCubes_GPU : Node
         return indices.ToArray();
     }
 
-    const int WORKGROUP_SIZE_X = 10;
-    const int WORKGROUP_SIZE_Y = 10;
-    const int WORKGROUP_SIZE_Z = 10;
+    const int WORKGROUP_SIZE_X = 32;
+    const int WORKGROUP_SIZE_Y = 32;
+    const int WORKGROUP_SIZE_Z = 32;
 
     RenderingDevice rd = null!;
 
@@ -51,6 +52,8 @@ public partial class MarchingCubes_GPU : Node
 
     void InitShader()
     {
+        if (rd is not null)
+            rd.Free();
         rd = RenderingServer.CreateLocalRenderingDevice();
         var shaderFile = GD.Load<RDShaderFile>("res://Mesh/MarchingCubes.glsl");
         var shaderBC = shaderFile.GetSpirV();
@@ -183,7 +186,7 @@ public partial class MarchingCubes_GPU : Node
         return st.Commit();
     }
 
-    public async void PutMesh()
+    public void PutMesh()
     {
         var node = new MeshInstance3D();
         Print.TimestampedMillis("Mesh gen: initializing uniforms");
@@ -193,7 +196,6 @@ public partial class MarchingCubes_GPU : Node
         Print.TimestampedMillis("Mesh gen: started generating");
         StartMeshGeneration();
         Print.TimestampedMillis("Mesh gen: processing waiting");
-        await System.Threading.Tasks.Task.Delay(10000);
         node.Mesh = this.ProcessMesh();
         Print.TimestampedMillis("Mesh gen: surface built");
         this.FreeResources();
@@ -204,14 +206,14 @@ public partial class MarchingCubes_GPU : Node
 
     private void FreeResources()
     {
-        rd.FreeRid(shader);
+        // rd.FreeRid(shader);
         rd.FreeRid(uniformSet);
         rd.FreeRid(LUTBuffer);
         rd.FreeRid(AreaDataBuffer);
         rd.FreeRid(VoxelValueBuffer);
         rd.FreeRid(CounterBuffer);
+        rd.FreeRid(MeshBuffer);
         rd.FreeRid(pipeline);
-        rd.Free();
     }
 
     [ExportToolButton("Init")]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://6qsp67v1axn6"]
+[gd_scene load_steps=9 format=3 uid="uid://6qsp67v1axn6"]
 
 [ext_resource type="Script" uid="uid://d4cxcmkcj2wc7" path="res://Mesh/MarchingCubes_GPU.cs" id="1_272bh"]
 [ext_resource type="Script" uid="uid://2pu7ad5x1q5f" path="res://CaveManager.cs" id="1_ig7tw"]
@@ -9,12 +9,7 @@
 [ext_resource type="Script" uid="uid://jqhrlw77ffci" path="res://Voxel/SphereBrush.cs" id="6_7mycd"]
 [ext_resource type="Script" uid="uid://vtgeol6hfdi4" path="res://Game/FreeCamera.gd" id="8_5vw27"]
 
-[sub_resource type="Environment" id="Environment_272bh"]
-
 [node name="Scene" type="Node3D"]
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_272bh")
 
 [node name="Cave" type="Node" parent="." node_paths=PackedStringArray("layout", "area", "cubes", "brush")]
 script = ExtResource("1_ig7tw")
@@ -41,15 +36,15 @@ tip_marker = ExtResource("4_1bvp3")
 
 [node name="Voxels" type="Node3D" parent="Cave" node_paths=PackedStringArray("Brush")]
 script = ExtResource("5_lquwl")
-SizeX = 100
-SizeY = 100
-SizeZ = 100
+SizeX = 32
+SizeY = 32
+SizeZ = 32
 VoxelWidth = 1.0
 VoxelMarker = ExtResource("3_h2yge")
 Brush = NodePath("../SphereBrush")
 
 [node name="SphereBrush" type="Node3D" parent="Cave"]
-transform = Transform3D(1.0000002, -1.108395e-08, 8.7138396e-08, 1.1083945e-08, 1.0000004, 4.1766476e-08, -8.7138375e-08, -4.176647e-08, 1.0000005, 4.219018, 0.36946678, 31.179588)
+transform = Transform3D(0.5074373, 0.70673364, 0.49298728, -0.84641707, 0.30157167, 0.43890125, 0.1615152, -0.6399868, 0.75122, -5.0585947, -10.418443, 71.214226)
 script = ExtResource("6_7mycd")
 radius = 1.87
 metadata/_custom_type_script = "uid://jqhrlw77ffci"
