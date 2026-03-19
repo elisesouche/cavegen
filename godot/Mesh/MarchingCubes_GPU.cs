@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using CaveGen.Voxel;
 using Godot;
-using GodotTask;
 
 namespace CaveGen.Mesh;
 
@@ -200,8 +199,11 @@ public partial class MarchingCubes_GPU : Node
         Print.TimestampedMillis("Mesh gen: surface built");
         this.FreeResources();
         foreach (var c in this.GetChildren())
+        {
             c.QueueFree();
+        }
         this.AddChild(node);
+        node.Owner = GetTree().EditedSceneRoot;
     }
 
     private void FreeResources()

@@ -2,38 +2,26 @@ using Godot;
 
 namespace CaveGen;
 
-[Tool]
+[GlobalClass, Tool]
 public partial class CaveManager : Node
 {
     [Export]
-    Layout.LayoutGenerator? layout;
+    Layout.LayoutGenerator layout = null!;
 
     [Export]
-    Voxel.VoxelArea? area;
+    Voxel.VoxelArea area = null!;
 
     [Export]
-    Mesh.MarchingCubes_GPU? cubes;
+    Mesh.MarchingCubes_GPU cubes = null!;
 
     [Export]
-    Voxel.Brush? brush;
+    Voxel.Brush brush = null!;
 
     [ExportToolButton("Generate cave")]
     Callable __make => Callable.From(GenerateCave);
 
-    [System.Diagnostics.CodeAnalysis.MemberNotNull(nameof(layout))]
-    [System.Diagnostics.CodeAnalysis.MemberNotNull(nameof(area))]
-    [System.Diagnostics.CodeAnalysis.MemberNotNull(nameof(cubes))]
-    [System.Diagnostics.CodeAnalysis.MemberNotNull(nameof(brush))]
-    void EnsureNonNull()
-    {
-        if (layout is null || area is null | cubes is null || brush is null)
-            throw new System.NullReferenceException();
-    }
-
     void GenerateCave()
     {
-        EnsureNonNull();
-
         var markers = layout.Run();
         area.Reset();
 

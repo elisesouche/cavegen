@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://6qsp67v1axn6"]
+[gd_scene format=3 uid="uid://6qsp67v1axn6"]
 
 [ext_resource type="Script" uid="uid://d4cxcmkcj2wc7" path="res://Mesh/MarchingCubes_GPU.cs" id="1_272bh"]
 [ext_resource type="Script" uid="uid://2pu7ad5x1q5f" path="res://CaveManager.cs" id="1_ig7tw"]
@@ -9,16 +9,16 @@
 [ext_resource type="Script" uid="uid://jqhrlw77ffci" path="res://Voxel/SphereBrush.cs" id="6_7mycd"]
 [ext_resource type="Script" uid="uid://vtgeol6hfdi4" path="res://Game/FreeCamera.gd" id="8_5vw27"]
 
-[node name="Scene" type="Node3D"]
+[node name="Scene" type="Node3D" unique_id=1147592546]
 
-[node name="Cave" type="Node" parent="." node_paths=PackedStringArray("layout", "area", "cubes", "brush")]
+[node name="Cave" type="Node" parent="." unique_id=664553193 node_paths=PackedStringArray("layout", "area", "cubes", "brush")]
 script = ExtResource("1_ig7tw")
 layout = NodePath("Layout")
 area = NodePath("Voxels")
-cubes = NodePath("MarchingCubes_GPU")
+cubes = NodePath("MarchingCubes_GPU2")
 brush = NodePath("SphereBrush")
 
-[node name="Layout" type="Node" parent="Cave" node_paths=PackedStringArray("anchor")]
+[node name="Layout" type="Node" parent="Cave" unique_id=1269935718 node_paths=PackedStringArray("anchor")]
 script = ExtResource("2_0xm2m")
 macro_defs = ["@C = FRFRFRFR", "@C = FLFLFLFL", "@H = UFUFUFFFFDFDFDF", "@H=DFDFDFFFFUFUFUF", "@I = FFFFF", "@Q = F[RRFZ][LLFZ]FZ", "@T = UFUFUFFFZFDFDFDF", "@T = DFDFDFFFZFUFUFUF"]
 rules = ["Z->@I@Q[@HZ][@T@C]", "Z->@H@I[Z]@C@C"]
@@ -32,9 +32,9 @@ joinProbability = 1.0
 normal_marker = ExtResource("3_h2yge")
 tip_marker = ExtResource("4_1bvp3")
 
-[node name="Node3D" type="Node3D" parent="Cave/Layout"]
+[node name="Node3D" type="Node3D" parent="Cave/Layout" unique_id=1418590490]
 
-[node name="Voxels" type="Node3D" parent="Cave" node_paths=PackedStringArray("Brush")]
+[node name="Voxels" type="Node3D" parent="Cave" unique_id=1132033876 node_paths=PackedStringArray("Brush")]
 script = ExtResource("5_lquwl")
 SizeX = 32
 SizeY = 32
@@ -43,27 +43,27 @@ VoxelWidth = 1.0
 VoxelMarker = ExtResource("3_h2yge")
 Brush = NodePath("../SphereBrush")
 
-[node name="SphereBrush" type="Node3D" parent="Cave"]
-transform = Transform3D(0.5074373, 0.70673364, 0.49298728, -0.84641707, 0.30157167, 0.43890125, 0.1615152, -0.6399868, 0.75122, -5.0585947, -10.418443, 71.214226)
+[node name="SphereBrush" type="Node3D" parent="Cave" unique_id=1474066523]
+transform = Transform3D(0.41665, 0.49307492, -0.76372874, -0.2425676, 0.8699643, 0.42933035, 0.8761081, 0.0063753175, 0.4820743, -8.646623, -21.623714, 52.53157)
 script = ExtResource("6_7mycd")
 radius = 1.87
 metadata/_custom_type_script = "uid://jqhrlw77ffci"
 
-[node name="MarchingCubes_GPU" type="Node" parent="Cave" node_paths=PackedStringArray("Area")]
+[node name="MarchingCubes_GPU2" type="Node" parent="Cave" unique_id=1021341885 node_paths=PackedStringArray("Area")]
 script = ExtResource("1_272bh")
 Area = NodePath("../Voxels")
 LUTPath = "res://Mesh/LUT.txt"
 metadata/_custom_type_script = "uid://d4cxcmkcj2wc7"
 
-[node name="player" type="Node3D" parent="."]
+[node name="player" type="Node3D" parent="." unique_id=530266087]
 transform = Transform3D(-0.9983418, 0, 0.057564035, 0, 1, 0, -0.057564043, 0, -0.9983417, -0.006513581, 0.75136083, 0.0805986)
 script = ExtResource("8_5vw27")
 
-[node name="Camera3D" type="Camera3D" parent="player"]
+[node name="Camera3D" type="Camera3D" parent="player" unique_id=2057466376]
 transform = Transform3D(1, 0, 2.9802322e-08, -7.450581e-09, 1.0000001, 0, 2.9802322e-08, 7.450581e-09, 1.0000002, 0, 0, 0)
 current = true
 
-[node name="SpotLight3D" type="SpotLight3D" parent="player"]
+[node name="SpotLight3D" type="SpotLight3D" parent="player" unique_id=71384653]
 light_color = Color(1, 0.98933333, 0.84000003, 1)
 light_energy = 8.22
 light_indirect_energy = 2.561
