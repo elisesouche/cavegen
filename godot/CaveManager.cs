@@ -51,7 +51,7 @@ public partial class CaveManager : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        GenerateCave();
+        // GenerateCave();
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
