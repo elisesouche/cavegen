@@ -36,7 +36,7 @@ public partial class MarchingCubes_GPU : Node
     const int WORKGROUP_SIZE_Y = 10;
     const int WORKGROUP_SIZE_Z = 10;
 
-    RenderingDevice rd = null!;
+    RenderingDevice rd = RenderingServer.CreateLocalRenderingDevice();
 
     Rid shader;
 
@@ -51,7 +51,6 @@ public partial class MarchingCubes_GPU : Node
 
     void InitShader()
     {
-        rd = RenderingServer.CreateLocalRenderingDevice();
         var shaderFile = GD.Load<RDShaderFile>("res://Mesh/MarchingCubes.glsl");
         var shaderBC = shaderFile.GetSpirV();
         shader = rd.ShaderCreateFromSpirV(shaderBC);
@@ -200,10 +199,12 @@ public partial class MarchingCubes_GPU : Node
         foreach (var c in this.GetChildren())
             c.QueueFree();
         this.AddChild(node);
+        node.Owner = GetTree().EditedSceneRoot;
     }
 
     private void FreeResources()
     {
+        GD.Print("Freeing resources");
         rd.FreeRid(shader);
         rd.FreeRid(uniformSet);
         rd.FreeRid(LUTBuffer);
@@ -211,7 +212,8 @@ public partial class MarchingCubes_GPU : Node
         rd.FreeRid(VoxelValueBuffer);
         rd.FreeRid(CounterBuffer);
         rd.FreeRid(pipeline);
-        rd.Free();
+        // rd.Free();
+        // rd = null;
     }
 
     [ExportToolButton("Init")]
