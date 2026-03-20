@@ -73,4 +73,6 @@ light_color = Color(1, 0.98933333, 0.84000003, 1)
 light_energy = 8.22
 light_indirect_energy = 2.561
 light_specular = 0.0
-spot_angle = 51.86099
+spot_range = 13.322
+spot_angle = 44.1
+spot_angle_attenuation = 1.4142116
