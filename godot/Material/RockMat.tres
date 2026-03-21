@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dl06vpme6vedp"]
+
+[ext_resource type="Shader" uid="uid://06morenw3lf2" path="res://Material/Triplanar.gdshader" id="1_w5veq"]
+[ext_resource type="Texture2D" uid="uid://cucw5ojxsclto" path="res://Material/rock_wall_02_4k/textures/rock_wall_02_diff_4k.png" id="2_h2vwn"]
+[ext_resource type="Texture2D" uid="uid://sqwyk4uvx08" path="res://Material/rock_wall_02_4k/textures/rock_wall_02_arm_4k.png" id="3_h2vwn"]
+[ext_resource type="Texture2D" uid="uid://ds8aal5xw0p52" path="res://Material/rock_wall_02_4k/textures/rock_wall_02_nor_gl_4k.png" id="3_vnkd5"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_w5veq")
+shader_parameter/albedo = Array[Texture2D]([ExtResource("2_h2vwn"), ExtResource("2_h2vwn"), ExtResource("2_h2vwn")])
+shader_parameter/normal_map = Array[Texture2D]([ExtResource("3_vnkd5"), ExtResource("3_vnkd5"), ExtResource("3_vnkd5")])
+shader_parameter/arm = Array[Texture2D]([ExtResource("3_h2vwn"), ExtResource("3_h2vwn"), ExtResource("3_h2vwn")])

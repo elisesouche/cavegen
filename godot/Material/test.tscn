@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://q0johln88fj0"]
+
+[ext_resource type="Material" uid="uid://dl06vpme6vedp" path="res://Material/RockMat.tres" id="1_5yuum"]
+[ext_resource type="Material" uid="uid://eu75ofqrycf7" path="res://Material/TestMat.tres" id="1_fd2sw"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_5yuum"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_es4m4"]
+
+[node name="Node3D" type="Node3D" unique_id=510384801]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=671472745]
+transform = Transform3D(0.7888911, 0.5468158, 0.28043422, -0.61453307, 0.70196086, 0.36000025, 0, -0.4563371, 0.889807, 0.3987695, 0.0854693, -0.63378394)
+material_override = ExtResource("1_5yuum")
+mesh = SubResource("SphereMesh_5yuum")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=1101742002]
+transform = Transform3D(0.38369903, 0, 0.92345816, 0, 1, 0, -0.92345816, 0, 0.38369903, -1.1255956, 0, 0)
+material_override = ExtResource("1_fd2sw")
+mesh = SubResource("BoxMesh_es4m4")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=165794547]
+transform = Transform3D(0.7888911, 0.54681575, 0.28043422, -0.61453307, 0.7019608, 0.36000025, 0, -0.45633703, 0.88980705, -0.08553335, 0.6919014, -1.0319867)

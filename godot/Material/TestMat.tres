@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://eu75ofqrycf7"]
+
+[ext_resource type="Shader" uid="uid://06morenw3lf2" path="res://Material/Triplanar.gdshader" id="1_71k6j"]
+[ext_resource type="Texture2D" uid="uid://c7u3itvk02uls" path="res://Material/templategrid_albedo.png" id="2_3rea2"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_71k6j")
+shader_parameter/albedo = Array[Texture2D]([ExtResource("2_3rea2"), ExtResource("2_3rea2"), ExtResource("2_3rea2")])
+shader_parameter/normal_map = null
+shader_parameter/roughness = null
+shader_parameter/ao = null
