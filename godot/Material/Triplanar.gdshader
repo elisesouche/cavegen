@@ -12,6 +12,11 @@ void vertex() {
     tex_position_x = VERTEX.zy;
     tex_position_y = VERTEX.xz;
     tex_position_z = VERTEX.xy;
+    if (NORMAL.x <  0.) tex_position_x.x *= -1.;
+    if (NORMAL.y <  0.) tex_position_y.x *= -1.;
+    if (NORMAL.z >= 0.) tex_position_z.x *= -1.;
+    tex_position_x.y += 0.5;
+    tex_position_z.x += 0.5;
 }
 
 vec3 get_projection_weights(in vec3 normal) {
