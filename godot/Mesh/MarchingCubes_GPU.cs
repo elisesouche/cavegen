@@ -184,7 +184,7 @@ public partial class MarchingCubes_GPU : Node
 
     public async void PutMesh()
     {
-        var node = new MeshInstance3D();
+        var node = (MeshInstance3D)GetChild(0);
         Print.TimestampedMillis("Mesh gen: initializing uniforms");
         InitUniforms();
         Print.TimestampedMillis("Mesh gen: initializing compute");
@@ -196,10 +196,6 @@ public partial class MarchingCubes_GPU : Node
         node.Mesh = this.ProcessMesh();
         Print.TimestampedMillis("Mesh gen: surface built");
         this.FreeResources();
-        foreach (var c in this.GetChildren())
-            c.QueueFree();
-        this.AddChild(node);
-        node.Owner = GetTree().EditedSceneRoot;
     }
 
     private void FreeResources()
