@@ -191,8 +191,6 @@ public partial class MarchingCubes_GPU : Node
         InitComputeList();
         Print.TimestampedMillis("Mesh gen: started generating");
         StartMeshGeneration();
-        Print.TimestampedMillis("Mesh gen: processing waiting");
-        await System.Threading.Tasks.Task.Delay(10000);
         node.Mesh = this.ProcessMesh();
         Print.TimestampedMillis("Mesh gen: surface built");
         this.FreeResources();
