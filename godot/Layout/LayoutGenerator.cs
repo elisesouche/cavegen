@@ -156,7 +156,7 @@ public partial class LayoutGenerator : Node
             );
             tips.Remove(other);
             var dst = mark.position.Origin.DistanceTo(other.position.Origin);
-            var step = 1.0f;
+            var step = this.step;
             for (var f = 0.0f; f < 1.0f; f += step / dst)
             {
                 var trans = mark.position.InterpolateWith(other.position, f);
