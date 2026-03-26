@@ -6,5 +6,8 @@ pkgs.mkShell {
     pkgs.godot_4-mono
     pkgs.omnisharp-roslyn
     pkgs.csharpier
+
+    pkgs.typst
   ];
+
 }
