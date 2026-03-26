@@ -263,10 +263,11 @@ static class LSystemParser
         return symbols;
     }
 
+    // FIXME this code used to be complicated when names could have variable
+    // length, now they are just one character so this should be simplified.
     private static string ParseMacroName(string s, ref int index)
     {
         int start = index + 1;
-        // while (index + 1 < s.Length && char.IsLetterOrDigit(s[index + 1]))
         index++;
         return s[start..(index + 1)];
     }

@@ -1,3 +1,5 @@
+// This is an implementation of Marching Cubes on the CPU. I wrote it as a
+// sanity check. Look at MarchingCubes_GPU.cs
 using System.Collections.Generic;
 using CaveGen.Voxel;
 using Godot;
@@ -554,7 +556,6 @@ public partial class MarchingCubes : Node
 
     Vector4 InterpolateVerts(Vector4 v1, Vector4 v2, float isoLevel)
     {
-        //return (v1 + v2) * 0.5;
         float t = (isoLevel - v1.W) / (v2.W - v1.W);
         return v1 + t * (v2 - v1);
     }
@@ -646,13 +647,12 @@ public partial class MarchingCubes : Node
         var lut = LoadLUT();
         Area.IterVoxels(vox => ProcessVoxel(tris, lut, vox));
 
-        // ArrayMesh mesh = new();
-        // mesh.AddSurfaceFromArrays(ArrayMesh.PrimitiveType.Triangles, tris);
         SurfaceTool st = new();
         st.Begin(Godot.Mesh.PrimitiveType.Triangles);
         foreach (var tri in tris)
         {
             var norm_ = tri.norm.XYZ();
+            // Godot's convention is the other way around
             var norm = new Vector3(norm_.X, norm_.Z, norm_.Y);
             st.SetNormal(norm);
             st.AddVertex(tri.a.XYZ());
@@ -662,7 +662,6 @@ public partial class MarchingCubes : Node
             st.AddVertex(tri.c.XYZ());
         }
         st.Index();
-        // st.GenerateNormals();
         return st.Commit();
     }
 

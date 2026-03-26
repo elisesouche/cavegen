@@ -18,6 +18,8 @@ public partial class MarchingCubes_GPU : Node
     [Export(PropertyHint.File)]
     string LUTPath { get; set; } = "";
 
+    // This is the lookup table that gives triangle indices depending on which
+    // vertices of the cube are inside/outside the volume.
     byte[] LoadLUT()
     {
         var file = FileAccess.Open(this.LUTPath, FileAccess.ModeFlags.Read);

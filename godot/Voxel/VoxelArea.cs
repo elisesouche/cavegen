@@ -52,9 +52,9 @@ public partial class VoxelArea : Node3D
         return new VoxelCoord(x, y, z);
     }
 
-    // In the last minutes of this project, trying desperately to optimize, I
-    // asked an LLM to optimize this function. It is a rewrite of the previous
-    // implementation.
+    // WARNING: THIS FUNCTION WAS WRITTEN BY AN LLM
+    //
+    // It is a rewrite and optimization of my previous implementation.
     public void ApplyBrush(Brush brush)
     {
         // compute center in VoxelArea local space as before

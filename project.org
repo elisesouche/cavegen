@@ -1,6 +1,6 @@
 #+title: Procedural Cave Generation
 
-* Progress [1/4]
+* Progress [3/4]
 ** [X] Layout generation [4/4]
 
 *** [X] L-System
@@ -16,21 +16,21 @@
 It should be nondeterministic, but have short loops. Find a good probability
 distribution.
 
-** [ ] Mesh generation [0/4]
+** [X] Mesh generation [0/0]
 
-*** [ ] Metaball definition, with noise
+*** [X] Metaball definition, with noise
 
-*** [ ] Following the turtle
+*** [X] Following the turtle
 
-*** [ ] Carving into the vertex field
+*** [X] Carving into the vertex field
 
-*** [ ] Mesh generation with Marching Cubes
+*** [X] Mesh generation with Marching Cubes
 
-** [ ] Shading [0/2]
+** [X] Shading [0/0]
 
-*** [ ] Triplanar projection
+*** [X] Triplanar projection
 
-*** [ ] Finding adequate textures
+*** [X] Finding adequate textures
 
 ** [ ] Props [0/2]
 
