@@ -253,8 +253,9 @@ Unfortunately, this shows in the final result, which looks somewhat blocky.
 Also, I used a single texture for the whole cave, which is repetitive and not of
 great quality.
 
-Despite these limitations, I find the result decent looking. It looks like a
-cave.
+Despite these limitations, I find that these do look like caves and are of
+decent quality. I asked one other person who thought the same. This is not very
+scientific.
 
 == Performance <sec:performance>
 
@@ -267,7 +268,10 @@ During development, I used two machines:
 
 On neither did the performance prove sufficient for real-time generation. The
 main bottleneck is the marching cubes. On the mobile workstation, generating a
-cave from only 200 000 voxels takes as much as 5 minutes.
+cave from only 1 000 000 voxels takes as much as 5 minutes. However, I don't
+really understand why the performance is so terrible. Both the CPU and the GPU
+are running almost idle. I have no idea why, despite my (limited) attempts at
+profiling.
 
 = Further work
 
