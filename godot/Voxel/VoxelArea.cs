@@ -52,29 +52,61 @@ public partial class VoxelArea : Node3D
         return new VoxelCoord(x, y, z);
     }
 
+    // In the last minutes of this project, trying desperately to optimize, I asked an LLM to optimize this function. It is a rewrite of the previous implementation.
     public void ApplyBrush(Brush brush)
     {
-        // Find the bounding box
+        // compute center in VoxelArea local space as before
         var center = ToLocal(brush.GlobalPosition);
         var center_vox = World2Voxel(center);
-        var bounds = World2Voxel(brush.Bounds);
-        for (int x = -bounds.X; x <= bounds.X; x++)
+
+        // compute bounding extents as integer radii (in voxels)
+        var bounds_vox = World2Voxel(brush.Bounds);
+
+        // pre-clamp bounding box to voxel array indices
+        int minX = Math.Max(0, center_vox.X - bounds_vox.X);
+        int maxX = Math.Min(SizeX - 1, center_vox.X + bounds_vox.X);
+        int minY = Math.Max(0, center_vox.Y - bounds_vox.Y);
+        int maxY = Math.Min(SizeY - 1, center_vox.Y + bounds_vox.Y);
+        int minZ = Math.Max(0, center_vox.Z - bounds_vox.Z);
+        int maxZ = Math.Min(SizeZ - 1, center_vox.Z + bounds_vox.Z);
+
+        // cache frequently used values
+        float vw = VoxelWidth;
+        var centerOffset = CenterOffset;
+        var areaGlobal = this.GlobalTransform; // copy once
+        // Precompute transform from Area-local -> Brush-local to avoid ToGlobal + ToLocal per voxel
+        var areaToBrush = brush.GlobalTransform.AffineInverse() * this.GlobalTransform;
+
+        // Precompute base local position for the voxel at (minX,minY,minZ)
+        var baseLocal =
+            new Vector3((minX + 0.5f) * vw, (minY + 0.5f) * vw, (minZ + 0.5f) * vw) - centerOffset;
+        // baseLocal is in Area-local coordinates (matching Voxel2World's local output)
+        // We'll increment by vw across loops
+
+        // local reference to internal voxels array to avoid property overhead
+        var localVoxels = voxels; // field
+        // iterate using ints, update voxels directly, and perform a single Xform per voxel
+        for (int xi = minX; xi <= maxX; xi++)
         {
-            for (int y = -bounds.Y; y <= bounds.Y; y++)
+            float offsetX = (xi - minX) * vw;
+            for (int yi = minY; yi <= maxY; yi++)
             {
-                for (int z = -bounds.Z; z <= bounds.Z; z++)
+                float offsetY = (yi - minY) * vw;
+                for (int zi = minZ; zi <= maxZ; zi++)
                 {
-                    var voxel = new VoxelCoord(
-                        center_vox.X + x,
-                        center_vox.Y + y,
-                        center_vox.Z + z
+                    float offsetZ = (zi - minZ) * vw;
+                    // build area-local position of this voxel (as Voxel2World would)
+                    var localPos = new Vector3(
+                        baseLocal.X + offsetX,
+                        baseLocal.Y + offsetY,
+                        baseLocal.Z + offsetZ
                     );
-                    if (IsInBounds(voxel))
-                    {
-                        var voxel_loc = ToGlobal(Voxel2World(voxel));
-                        var value = brush.GetValueAtWorld(voxel_loc);
-                        ModifyVoxelValue(voxel, v => v - value);
-                    }
+                    // transform directly into brush-local coordinates (one transform)
+                    var brushLocal = areaToBrush * localPos;
+                    // evaluate brush at brush-local position (call GetValueAtLocal directly)
+                    var value = brush.GetValueAtLocal(brushLocal);
+                    // update voxels directly (no delegate allocations, no helper calls)
+                    localVoxels[xi, yi, zi].value -= value;
                 }
             }
         }
