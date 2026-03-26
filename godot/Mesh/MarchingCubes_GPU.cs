@@ -120,8 +120,6 @@ public partial class MarchingCubes_GPU : Node
         );
     }
 
-    static uint CeilDiv(uint a, uint b) => (a + b - 1) / b;
-
     public void Init()
     {
         InitShader();
@@ -136,9 +134,9 @@ public partial class MarchingCubes_GPU : Node
         rd.ComputeListBindUniformSet(computeList, uniformSet, 0);
         rd.ComputeListDispatch(
             computeList,
-            CeilDiv((uint)Area.SizeX, WORKGROUP_SIZE_X),
-            CeilDiv((uint)Area.SizeY, WORKGROUP_SIZE_Y),
-            CeilDiv((uint)Area.SizeZ, WORKGROUP_SIZE_Z)
+            (uint)Area.SizeX / WORKGROUP_SIZE_X,
+            (uint)Area.SizeY / WORKGROUP_SIZE_Y,
+            (uint)Area.SizeZ / WORKGROUP_SIZE_Z
         );
         rd.ComputeListEnd();
     }
@@ -155,7 +153,6 @@ public partial class MarchingCubes_GPU : Node
     {
         rd.Sync();
 
-        Print.TimestampedMillis("Mesh gen: generation done");
         var counterBytes = rd.BufferGetData(CounterBuffer);
         uint triCount = BitConverter.ToUInt32(counterBytes);
 
@@ -163,18 +160,12 @@ public partial class MarchingCubes_GPU : Node
         var allTriangles = MemoryMarshal.Cast<byte, Triangle>(bytes);
         var triangles = allTriangles.Slice(0, (int)triCount);
 
-        Print.TimestampedMillis($"Mesh gen: buffer obtained");
         SurfaceTool st = new();
         st.Begin(Godot.Mesh.PrimitiveType.Triangles);
         foreach (var tri in triangles)
         {
-            var norm_ = tri.norm.XYZ();
-            var norm = new Vector3(norm_.X, norm_.Z, norm_.Y);
-            // st.SetNormal(norm);
             st.AddVertex(tri.a.XYZ());
-            // st.SetNormal(norm);
             st.AddVertex(tri.b.XYZ());
-            // st.SetNormal(norm);
             st.AddVertex(tri.c.XYZ());
         }
         st.GenerateNormals();
@@ -182,23 +173,18 @@ public partial class MarchingCubes_GPU : Node
         return st.Commit();
     }
 
-    public async void PutMesh()
+    public void PutMesh()
     {
         var node = (MeshInstance3D)GetChild(0);
-        Print.TimestampedMillis("Mesh gen: initializing uniforms");
         InitUniforms();
-        Print.TimestampedMillis("Mesh gen: initializing compute");
         InitComputeList();
-        Print.TimestampedMillis("Mesh gen: started generating");
         StartMeshGeneration();
         node.Mesh = this.ProcessMesh();
-        Print.TimestampedMillis("Mesh gen: surface built");
         this.FreeResources();
     }
 
     private void FreeResources()
     {
-        GD.Print("Freeing resources");
         rd.FreeRid(shader);
         rd.FreeRid(uniformSet);
         rd.FreeRid(LUTBuffer);

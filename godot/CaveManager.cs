@@ -34,18 +34,21 @@ public partial class CaveManager : Node
     {
         EnsureNonNull();
 
+        Print.TimestampedMillis("Creating layout");
         var markers = layout.Run();
-        area.Reset();
 
+        area.Reset();
+        Print.TimestampedMillis("Starting brushing");
         foreach (var marker in markers)
         {
             brush.Transform = marker.position;
             area.ApplyBrush(brush);
         }
 
+        Print.TimestampedMillis("Creating mesh");
         cubes.Init();
-        GD.Print("Calling putmesh");
         cubes.PutMesh();
+        Print.TimestampedMillis("All done.");
     }
 
     // Called when the node enters the scene tree for the first time.
