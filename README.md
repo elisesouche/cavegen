@@ -51,4 +51,5 @@ Brush application is the main computational bottleneck; generation time
 increases with voxel count. With the default parameters, complete cave
 generation take a few minutes on my laptop.
 
-Author: Élise Souche — CGDI Project, ENS de Lyon. 
+Author: Élise Souche, ENS de Lyon. 
+License: GPL-3.0-or-later
