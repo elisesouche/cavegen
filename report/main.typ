@@ -254,8 +254,8 @@ Also, I used a single texture for the whole cave, which is repetitive and not of
 great quality.
 
 Despite these limitations, I find that these do look like caves and are of
-decent quality. I asked one other person who thought the same. This is not very
-scientific.
+decent quality. I asked one other person who thought the same. Of course, this
+assessment is not very scientific.
 
 == Performance <sec:performance>
 
@@ -266,14 +266,48 @@ During development, I used two machines:
     [mobile workstation], [Intel Core i7-13800H], [32 GB], [NVIDIA RTX 2000 Ada]
 )]
 
-On neither did the performance prove sufficient for real-time generation. The
-main bottleneck is the marching cubes. On the mobile workstation, generating a
-cave from only 1 000 000 voxels takes as much as 5 minutes. However, I don't
-really understand why the performance is so terrible. Both the CPU and the GPU
-are running almost idle. I have no idea why, despite my (limited) attempts at
-profiling.
+For a long time, the performance of the generation was abysmal. Generating
+decently-sized caves was simply impossible. I thought that the bottleneck was
+the marching cubes implementation, which I spent a long time trying to optimize.
+However, after doing a bit of profiling, I found out that it was actually the
+application of the brush. Optimizing it made the performance a lot more
+bearable. If not real-time yet, I found that I was able to generate pretty large
+caves in less than five seconds on my workstation.
 
 = Further work
+
+== Performance optimizations
+
+To my surprise, the main bottleneck is the application of brushes. I did not
+have time to improve it as much as I could. I think a lot of benefit could be
+obtained by parallelizing it: the application of brushes at different points of
+the volume is conceptually independent. However, it is not so easy to implement
+due to some Godot APIs not being thread-safe. With more time, I could have tried
+to work around them. This code could even potentially be made into a compute
+shader. There are also certainly a lot of other places with redundant
+or inefficient calculations.
+
+== Tweaking settings
+
+The L-System I used appeared decent enough, but I could not reproduce the
+results of #cite(<main>, form: "prose"). A lot of manual tweaking is necessary
+to find satisfactory settings.
+
+Other improvements in visual quality could come from: using more complex brushes
+to emulate erosion creaks, switching from marching cubes to dual contouring or
+other methods to try to eliminate blockiness, finding better looking shaders and
+textures.
+
+== Adding details
+
+Caves in the real world often exhibit small scale geological features such as
+stalactites/stalagmites, little pebbles on the floor, traces of sediment
+deposition on the walls... A simple approach to adding these details would be to
+lay them randomly in suitable places, spawning premade assets.
+
+An other nice feature could be the addition of running water. It can be small
+droplets dropping from the ceiling to show that the cave is humid, or full-blown
+underground rivers. The latter would probably be much more complex.
 
 #show bibliography: set heading(outlined: false)
 #bibliography("bib.bib")
