@@ -35,6 +35,11 @@ metadata/_snap_count = 100
 
 [sub_resource type="Environment" id="Environment_5vw27"]
 ambient_light_energy = 0.0
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
+glow_enabled = true
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_kek77"]
 
@@ -125,3 +130,7 @@ spot_angle_attenuation = 1.4142116
 environment = SubResource("Environment_5vw27")
 camera_attributes = SubResource("CameraAttributesPractical_kek77")
 compositor = SubResource("Compositor_4c57u")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=321410805]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9124713, 12.527164, -10.7192955)
+omni_range = 194.548

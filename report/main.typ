@@ -47,17 +47,17 @@
 
 = Overview
 
-The goal of procedural content generation is to produce content (for instance,
-textures, models...), in my case caves, for use in videogames from algorithms
-and a source of randomness. We want to be able to click a button and obtain a
-new, never seen before cave for the player to explore. We do not strive for
-physical and geological accuracy, but rather for subjective criterias of
-aesthetics and fun.
+In videogames, procedural content generation intends to produce content from
+algorithms and a source of randomness. This content can be textures, models, or,
+in my case, caves. This allows theoretically infinite variety and automation. We
+want to be able to click a button and obtain a new, never seen before cave for
+the player to explore. We do not strive for physical and geological accuracy,
+but rather for subjective criterias of aesthetics and fun.
 
 #figure(caption: [Screenshots from my little demo])[
     #grid(columns: (1fr, 1fr),
-        image(width: 95%, "images/scrot1.png"),
-        image(width: 95%, "images/scrot2.png")
+        image(width: 99%, "images/scrot1.png"),
+        image(width: 99%, "images/scrot2.png")
     )
 ]
 
@@ -78,7 +78,8 @@ this is insufficient to capture the complexity of a real cave. First, caves in
 the real world often feature actual rooms and large spaces. We can recover this
 by having several small rooms very close to each other. Second, corridors are
 not straight edges; they should bend and curve. We can emulate this by creating
-intermediary control points along the edge. Therefore, the graph model will do.
+intermediary control points along the edge. Therefore, the graph model seems
+appropriate.
 
 In the real world, the most common type of caves is created by the flow of water
 eroding the stone. Water cannot really flow cyclically. Therefore, it seems that
@@ -94,13 +95,13 @@ each step, we do all possible derivations. This can simulate the growth of
 plants or bacteria colonies; it is, in general, well suited to generate
 organic-looking shapes, and will be perfect for our caves.
 
-Formally, a L-System is a tuple $(N, T, S, cal(R))$ where $N$ and $T$ are finite
-sets (nonterminals and terminals), $S in N$ (initial item), and $cal(R)$ is a
-binary relation between $N$ and $(N union T)^*$ (the rules). Given a sentence
-$s in (N union T)^*$, we derive it by replacing every nonterminal $n$ in $s$ by
-_one of_ (chosen non-deterministically) the sentences $d$ such that $(n, d) in
-cal(R)$. The L-System can therefore generate sentences by doing successive
-derivations starting from $S$.
+Formally, an L-System is a tuple $(N, T, S, cal(R))$ where $N$ and $T$ are
+finite sets (nonterminals and terminals), $S in N$ (initial item), and $cal(R)$
+is a binary relation between $N$ and $(N union T)^*$ (the rules). Given a
+sentence $s in (N union T)^*$, we derive it by replacing every nonterminal $n$
+in $s$ by _one of_ (chosen non-deterministically) the sentences $d$ such that
+$(n, d) in cal(R)$. The L-System can therefore generate sentences by doing
+successive derivations starting from $S$.
 
 My implementation supports macros. They can have multiple possible expansions,
 which are chosen at random. An example L-System I found generates decent caves
@@ -182,8 +183,7 @@ A slight complexification that gives more interesting fusions between different
 brush strokes is to add a smooth transition from $1$ to $0$. In my experiments,
 I found that simply adding low amplitude simplex noise to such a smooth brush
 gives natural-looking results. #cite(<main>, form: "prose") use different kinds
-of anisotropic noise to give the look of erosion, but I did not have time to
-study this.
+of anisotropic noise to give the look of erosion.
 
 #figure(caption: [Volumetric view of the cave. The diamonds represent a voxel with density > 0.])[
     #image(width: 70%, "images/voxels.png")
@@ -222,11 +222,10 @@ From previous experience implementing this algorithm in Unity, I knew that it
 would benefit from running on the GPU using compute shaders. Having little
 experience with compute shaders in general and their Godot APIs in particular, I
 drew heavy inspiration from #cite(<seblaguecubes>, form: "prose")'s
-implementation. I first wrote a CPU implementation in C\#, which, has expected,
-turned out to be too slow to produces actual caves. I then ported it to a
-compute shader. After much hair-pulling from weird marshalling errors and Vulkan
-pipeline issues, I finally got something that works. The performance is
-unfortunately still not great, see @sec:performance for more details.
+implementation. I first wrote a CPU implementation in C\#, which, as expected,
+turned out to be too slow to produce actual caves. I then ported it to a compute
+shader. After much hair-pulling from weird marshalling errors and Vulkan
+pipeline issues, I finally got something that works.
 
 = Rendering
 
@@ -268,6 +267,13 @@ Despite these limitations, I find that these do look like caves and are of
 decent quality. I asked one other person who thought the same. Of course, this
 assessment is not very scientific.
 
+#figure(caption: [A large trench and a tunnel])[
+    #grid(columns: (1fr, 1fr),
+        image(width: 99%, "images/scrot3.png"),
+        image(width: 99%, "images/scrot4.png")
+    )
+]
+
 == Performance <sec:performance>
 
 During development, I used two machines:
@@ -283,7 +289,10 @@ the marching cubes implementation, which I spent a long time trying to optimize.
 However, after doing a bit of profiling, I found out that it was actually the
 application of the brush. Optimizing it made the performance a lot more
 bearable. If not real-time yet, I found that I was able to generate pretty large
-caves in less than five seconds on my workstation.
+caves in about 5 minutes on my workstation. There is however certainly still a
+bug in there: the time it takes seems to scale with the area size (number of
+voxels), where it should be constant. I think I found why (the computed bounds
+depend on the area size), but I couldn't fix it in time.
 
 = Further work
 
