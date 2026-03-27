@@ -3,6 +3,8 @@
 Procedural game-oriented cave geometry. Goals are aesthetics and fun; this is
 not intended as a geological simulation.
 
+It runs in the Godot game engine.
+
 Repository is on [GitHub](https://github.com/elisesouche/cavegen) :( 
 For more details, check the [report](./report/main.pdf).
 
@@ -11,6 +13,17 @@ For more details, check the [report](./report/main.pdf).
 - Godot 4.6 (Mono build)
 - .NET / Mono runtime supporting .NET 8
 - Vulkan-capable GPU with compute shader support
+
+## Usage
+
+2. Open the project folder [./godot](./godot) in the Godot editor. Allow the editor to
+   build the C# assemblies.
+3. Open the main scene [./godot/main.tscn](./godot/main.tscn) (it should open by default).
+4. Navigate the scene tree under the `Cave` node. You can edit parameters in the
+   Godot editor, then click the "Generate Cave" button in the Inspector of the
+   `Cave` node.
+5. You can press the "Run Project" (it is the little "play" arrow) button at the
+   top of the editor to explore the cave!
 
 ## Architecture
 
@@ -24,16 +37,6 @@ Pipeline stages:
    [./godot/Mesh](./godot/Mesh). The mesh is rendered with a PBR shader with
    triplanar mapping.
 
-## Usage
-
-2. Open the project folder [./godot](./godot) in the Godot editor. Allow the editor to
-   build the C# assemblies.
-3. Open the main scene [./godot/main.tscn](./godot/main.tscn) (it should open by default).
-4. Navigate the scene tree under the `Cave` node. You can edit parameters in the
-   Godot editor, then click the "Generate Cave" button in the Inspector of the
-   `Cave` node.
-5. You can press the "Run Project" button at the top of the editor to explore
-   the cave!
 
 ## Generation parameters
 
