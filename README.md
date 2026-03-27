@@ -3,6 +3,7 @@
 Procedural game-oriented cave geometry. Goals are aesthetics and fun; this is
 not intended as a geological simulation.
 
+Repository is on [GitHub](https://github.com/elisesouche/cavegen) :( 
 For more details, check the [report](./report/main.pdf).
 
 ## Requirements
